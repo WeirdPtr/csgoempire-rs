@@ -21,7 +21,10 @@ impl CSGOEmpireEndpoint for ActiceTradesEndpoint {
 }
 
 impl ActiceTradesEndpoint {
-    pub fn new(api_key: &'static str) -> Self {
+    pub fn new<K>(api_key: K) -> Self
+    where
+        K: Into<String>,
+    {
         Self(get_base_request(api_key))
     }
 }
@@ -39,9 +42,7 @@ impl From<ActiceTradesEndpoint> for CSGOEmpireApiRequest<ActiceTradesEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn active_trades(
-        api_key: &'static str,
-    ) -> CSGOEmpireApiRequest<ActiceTradesEndpoint> {
+    pub fn active_trades(api_key: &'static str) -> CSGOEmpireApiRequest<ActiceTradesEndpoint> {
         ActiceTradesEndpoint::new(api_key).into()
     }
 }

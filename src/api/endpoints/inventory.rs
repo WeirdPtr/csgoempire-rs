@@ -26,7 +26,10 @@ impl CSGOEmpireEndpoint for InventoryEndpoint {
 }
 
 impl InventoryEndpoint {
-    pub fn new(api_key: &'static str) -> Self {
+    pub fn new<K>(api_key: K) -> Self
+    where
+        K: Into<String>,
+    {
         let mut params = HashMap::new();
 
         params.insert("invalid", CSGOEmpireBool::No.to_string());

@@ -24,7 +24,10 @@ impl CSGOEmpireEndpoint for SettingsEndpoint {
 }
 
 impl SettingsEndpoint {
-    pub fn new(api_key: &'static str) -> Self {
+    pub fn new<K>(api_key: K) -> Self
+    where
+        K: Into<String>,
+    {
         let mut headers = get_base_request(api_key);
         headers.insert("Content-Type", "application/json".to_string());
         Self(headers, None)

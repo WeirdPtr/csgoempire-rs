@@ -22,7 +22,10 @@ impl CSGOEmpireEndpoint for ActiveAuctionsEndpoint {
 }
 
 impl ActiveAuctionsEndpoint {
-    pub fn new(api_key: &'static str) -> Self {
+    pub fn new<K>(api_key: K) -> Self
+    where
+        K: Into<String>,
+    {
         Self(get_base_request(api_key))
     }
 }
