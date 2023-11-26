@@ -40,7 +40,7 @@ pub struct User {
     pub utm_campaign: Value,
     pub country: String,
     pub steam_level: Value,
-    pub last_steam_level_cache: String,
+    pub last_steam_level_cache: Option<String>,
     pub whitelisted: i64,
     pub total_tips_received: i64,
     pub total_tips_sent: i64,
@@ -62,11 +62,11 @@ pub struct User {
     pub p2p_request_failed_trade_feedback: bool,
     pub p2p_filter_delivery_time_enabled: bool,
     pub unread_notifications: Vec<Value>,
-    pub last_session: LastSession,
+    pub last_session: Option<LastSession>,
     pub steam_inventory_url: String,
     pub steam_api_key: Option<String>,
     pub has_crypto_deposit: bool,
-    pub linked_accounts: Vec<Value>,
+    pub linked_accounts: Option<Vec<Value>>,
     pub api_token: String,
 }
 
