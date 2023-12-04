@@ -12,10 +12,10 @@ pub struct MetadataResponse {
 pub struct User {
     pub id: i64,
     pub steam_id: String,
-    pub steam_id_v3: Option<String>,
+    // pub steam_id_v3: Option<String>,
     pub steam_name: String,
     pub avatar: String,
-    pub profile_url: Option<String>,
+    // pub profile_url: Option<String>,
     pub registration_timestamp: String,
     pub registration_ip: String,
     pub last_login: String,
@@ -27,8 +27,8 @@ pub struct User {
     pub total_deposit: i64,
     pub total_withdraw: i64,
     pub withdraw_limit: i64,
-    pub csgo_playtime: Option<i64>,
-    pub last_csgo_playtime_cache: Option<String>,
+    // pub csgo_playtime: Option<i64>,
+    // pub last_csgo_playtime_cache: Option<String>,
     pub trade_url: Option<String>,
     pub trade_offer_token: Option<String>,
     pub ref_id: i64,
@@ -66,7 +66,7 @@ pub struct User {
     pub steam_inventory_url: String,
     pub steam_api_key: Option<String>,
     pub has_crypto_deposit: bool,
-    pub linked_accounts: Option<Vec<Value>>,
+    // pub linked_accounts: Option<Vec<Value>>,
     pub api_token: String,
 }
 
