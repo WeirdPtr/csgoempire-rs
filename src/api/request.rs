@@ -94,13 +94,10 @@ where
 
         let headers = self.endpoint.headers();
 
-        for header in E::REQUIRED_BASE_HEADERS {
-            if !headers.contains_key(header) {
-                return Err(CSGOEmpireApiRequestError::MissingHeader(header));
-            }
-        }
-
-        for header in E::REQUIRED_HEADERS {
+        for header in E::REQUIRED_BASE_HEADERS
+            .iter()
+            .chain(E::REQUIRED_HEADERS.iter())
+        {
             if !headers.contains_key(header) {
                 return Err(CSGOEmpireApiRequestError::MissingHeader(header));
             }
@@ -137,12 +134,7 @@ where
             _ => {}
         }
 
-        // println!("{:?}", response.text().await?);
-        // return Err(CSGOEmpireApiRequestError::InvalidResponse);
-
-        match response.json::<E::Response>().await {
-            Ok(json) => Ok(json),
-            Err(e) => Err(CSGOEmpireApiRequestError::ReqwestError(e)),
-        }
+        serde_json::from_str::<E::Response>(&response.text().await?)
+            .map_err(|e| CSGOEmpireApiRequestError::Other(e.into()))
     }
 }
