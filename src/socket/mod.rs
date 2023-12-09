@@ -3,7 +3,13 @@ pub mod constants;
 pub mod event;
 pub mod models;
 
-use socketio::{enums::packet::PacketType, parser::Packet, socket::Socket};
+/// Re-exported from the futures_util crate.
+pub use futures_util::FutureExt as SocketListenerFuture;
+/// Re-exported from the socketio crate.
+pub use socketio::enums::packet::PacketType;
+/// Re-exported from the socketio crate.
+pub use socketio::parser::Packet;
+use socketio::socket::Socket;
 
 pub struct CSGOEmpireSocket {
     _api_key: &'static str,
