@@ -57,8 +57,7 @@ impl CSGOEmpireSocket {
     where
         P: Into<Packet>,
     {
-        let _ = self.socket.send_packet(payload.into()).await;
-        Ok(())
+        self.socket.send_packet(payload.into()).await
     }
 
     pub async fn emit_raw<P>(&mut self, payload: P) -> Result<(), Box<dyn std::error::Error>>
@@ -79,9 +78,7 @@ impl CSGOEmpireSocket {
     }
 
     pub async fn connect(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        self.socket.handshake().await?;
-
-        Ok(())
+        self.socket.handshake().await
     }
 
     pub async fn reconnect(&mut self) -> Result<(), Box<dyn std::error::Error>> {
