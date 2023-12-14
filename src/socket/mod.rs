@@ -9,6 +9,11 @@ pub use futures_util::FutureExt as SocketListenerFuture;
 pub use socketio::enums::packet::PacketType;
 /// Re-exported from the socketio crate.
 pub use socketio::parser::Packet;
+/// Re-exported from the socketio crate.
+pub use socketio::socket::SocketReadStream;
+/// Re-exported from the socketio crate.
+pub use socketio::socket::SocketWriteSink;
+
 use socketio::socket::Socket;
 
 pub struct CSGOEmpireSocket {
