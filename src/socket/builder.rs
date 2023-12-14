@@ -221,13 +221,13 @@ impl CSGOEmpireSocketBuilder {
         });
     }
 
-    /// <b> Warning: This will clear previous event handlers </b>
-    pub fn change_url(mut self, url: &str) -> Self {
+    /// <b> Warning: This will clear all set event handlers </b>
+    pub fn change_url(&mut self, url: &str) -> &mut Self {
         self.rebuild_inner(url);
         self
     }
 
-    pub fn on<L>(mut self, event: CSGOEmpireSocketEvent, listener: L) -> Self
+    pub fn on<L>(&mut self, event: CSGOEmpireSocketEvent, listener: L) -> &mut Self
     where
         L: for<'a> Fn(
                 Packet,
@@ -242,7 +242,7 @@ impl CSGOEmpireSocketBuilder {
         self
     }
 
-    pub fn on_any<L>(mut self, listener: L) -> Self
+    pub fn on_any<L>(&mut self, listener: L) -> &mut Self
     where
         L: for<'a> Fn(
                 Packet,
