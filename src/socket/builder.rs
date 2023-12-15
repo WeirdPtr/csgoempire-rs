@@ -164,7 +164,7 @@ impl CSGOEmpireSocketBuilder {
                     // ))
                     // .await;
 
-                    let _ = Socket::send_raw(write, r#"42/trade,["filters",{"price_max_above":50,"delivery_time_long_max":720,"auction":"yes"}]"#.to_owned()).await;
+                    let _ = Socket::send_raw(write, r#"42/trade,["filters",{"price_max":9999999}]"#.to_owned()).await;
                     return;
                 }
 

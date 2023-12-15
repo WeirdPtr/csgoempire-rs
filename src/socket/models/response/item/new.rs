@@ -3,7 +3,7 @@ use serde_json::Value;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewItemResponse {
-    pub auction_ends_at: i64,
+    pub auction_ends_at: Option<u64>,
     pub auction_highest_bid: Option<u64>,
     pub auction_highest_bidder: Option<u64>,
     pub auction_number_of_bids: i64,
@@ -14,7 +14,7 @@ pub struct NewItemResponse {
     pub name_color: String,
     pub preview_id: Value,
     pub price_is_unreliable: bool,
-    pub stickers: Vec<Value>,
+    pub stickers: Vec<Sticker>,
     pub suggested_price: i64,
     pub wear: Option<f64>,
     pub published_at: String,
@@ -23,6 +23,13 @@ pub struct NewItemResponse {
     pub above_recommended_price: f64,
     pub purchase_price: i64,
     pub item_search: ItemSearch,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Sticker {
+    pub wear: Option<f64>,
+    pub name: String,
+    pub image: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
