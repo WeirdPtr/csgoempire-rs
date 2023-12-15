@@ -25,7 +25,7 @@ impl CSGOEmpireEndpoint for CancelDepositEndpoint {
 }
 
 impl CancelDepositEndpoint {
-    pub fn new(api_key: &'static str, deposit_id: u64) -> Self {
+    pub fn new(api_key: impl Into<String>, deposit_id: u64) -> Self {
         let mut shims = HashMap::new();
 
         shims.insert("{deposit_id}", deposit_id.to_string());
@@ -58,7 +58,7 @@ impl From<CancelDepositEndpoint> for CSGOEmpireApiRequest<CancelDepositEndpoint>
 
 impl CSGOEmpireApi {
     pub fn cancel_deposit(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         deposit_id: u64,
     ) -> CSGOEmpireApiRequest<CancelDepositEndpoint> {
         CancelDepositEndpoint::new(api_key, deposit_id).into()

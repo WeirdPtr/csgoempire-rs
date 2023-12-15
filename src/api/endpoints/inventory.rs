@@ -56,7 +56,7 @@ impl From<InventoryEndpoint> for CSGOEmpireApiRequest<InventoryEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn inventory(api_key: &'static str) -> CSGOEmpireApiRequest<InventoryEndpoint> {
+    pub fn inventory(api_key: impl Into<String>) -> CSGOEmpireApiRequest<InventoryEndpoint> {
         InventoryEndpoint::new(api_key).into()
     }
 }

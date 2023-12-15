@@ -27,7 +27,7 @@ impl CSGOEmpireEndpoint for CancelDepositsEndpoint {
 }
 
 impl CancelDepositsEndpoint {
-    pub fn new(api_key: &'static str, ids: Vec<i64>) -> Self {
+    pub fn new(api_key: impl Into<String>, ids: Vec<i64>) -> Self {
         let mut headers = get_base_request(api_key);
         headers.insert("Content-Type", "application/json".to_string());
         Self(headers, CancelDepositsRequest { ids })
@@ -59,7 +59,7 @@ impl From<CancelDepositsEndpoint> for CSGOEmpireApiRequest<CancelDepositsEndpoin
 
 impl CSGOEmpireApi {
     pub fn cancel_deposits<I>(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         ids: I,
     ) -> CSGOEmpireApiRequest<CancelDepositsEndpoint>
     where

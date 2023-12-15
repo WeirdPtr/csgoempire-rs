@@ -28,7 +28,7 @@ impl CSGOEmpireEndpoint for ListedItemsEndpoint {
 }
 
 impl ListedItemsEndpoint {
-    pub fn new(api_key: &'static str, per_page: u64, page: u64) -> Self {
+    pub fn new(api_key: impl Into<String>, per_page: u64, page: u64) -> Self {
         let mut params = HashMap::new();
 
         params.insert("per_page", per_page.to_string());
@@ -157,7 +157,7 @@ impl From<ListedItemsEndpoint> for CSGOEmpireApiRequest<ListedItemsEndpoint> {
 
 impl CSGOEmpireApi {
     pub fn listed_items(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         per_page: u64,
         page: u64,
     ) -> CSGOEmpireApiRequest<ListedItemsEndpoint> {

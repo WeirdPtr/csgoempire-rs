@@ -26,7 +26,7 @@ impl CSGOEmpireEndpoint for CreateDepositEndpoint {
 }
 
 impl CreateDepositEndpoint {
-    pub fn new(api_key: &'static str, request: CreateDepositRequest) -> Self {
+    pub fn new(api_key: impl Into<String>, request: CreateDepositRequest) -> Self {
         let mut headers = get_base_request(api_key);
         headers.insert("Content-Type", "application/json".to_string());
         Self(headers, Some(request))
@@ -51,7 +51,7 @@ impl From<CreateDepositEndpoint> for CSGOEmpireApiRequest<CreateDepositEndpoint>
 
 impl CSGOEmpireApi {
     pub fn create_deposit(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         request: CreateDepositRequest,
     ) -> CSGOEmpireApiRequest<CreateDepositEndpoint> {
         CreateDepositEndpoint::new(api_key, request).into()

@@ -27,7 +27,7 @@ impl CSGOEmpireEndpoint for CancelWithdrawalEndpoint {
 }
 
 impl CancelWithdrawalEndpoint {
-    pub fn new(api_key: &'static str, withdrawal_id: u64) -> Self {
+    pub fn new(api_key: impl Into<String>, withdrawal_id: u64) -> Self {
         let mut headers = get_base_request(api_key);
         headers.insert("Content-Type", "application/json".to_string());
 
@@ -62,7 +62,7 @@ impl From<CancelWithdrawalEndpoint> for CSGOEmpireApiRequest<CancelWithdrawalEnd
 
 impl CSGOEmpireApi {
     pub fn cancel_withdrawal(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         withdrawal_id: u64,
     ) -> CSGOEmpireApiRequest<CancelWithdrawalEndpoint> {
         CancelWithdrawalEndpoint::new(api_key, withdrawal_id).into()

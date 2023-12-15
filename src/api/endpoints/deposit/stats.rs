@@ -26,7 +26,7 @@ impl CSGOEmpireEndpoint for DepositorStatsEndpoint {
 }
 
 impl DepositorStatsEndpoint {
-    pub fn new(api_key: &'static str, depositor_id: u64) -> Self {
+    pub fn new(api_key: impl Into<String>, depositor_id: u64) -> Self {
         let mut shims = HashMap::new();
 
         shims.insert("depositor_id", depositor_id.to_string());
@@ -53,7 +53,7 @@ impl From<DepositorStatsEndpoint> for CSGOEmpireApiRequest<DepositorStatsEndpoin
 
 impl CSGOEmpireApi {
     pub fn depositor_stats(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         depositor_id: u64,
     ) -> CSGOEmpireApiRequest<DepositorStatsEndpoint> {
         DepositorStatsEndpoint::new(api_key, depositor_id).into()
