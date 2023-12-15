@@ -43,7 +43,7 @@ impl From<ActiveAuctionsEndpoint> for CSGOEmpireApiRequest<ActiveAuctionsEndpoin
 }
 
 impl CSGOEmpireApi {
-    pub fn active_auctions(api_key: &'static str) -> CSGOEmpireApiRequest<ActiveAuctionsEndpoint> {
+    pub fn active_auctions(api_key: impl Into<String>) -> CSGOEmpireApiRequest<ActiveAuctionsEndpoint> {
         ActiveAuctionsEndpoint::new(api_key).into()
     }
 }

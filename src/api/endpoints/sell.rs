@@ -25,7 +25,7 @@ impl CSGOEmpireEndpoint for InstantSellEndpoint {
 }
 
 impl InstantSellEndpoint {
-    pub fn new(api_key: &'static str, deposit_id: u64) -> Self {
+    pub fn new(api_key: impl Into<String>, deposit_id: u64) -> Self {
         let mut shims = HashMap::new();
 
         shims.insert("{deposit_id}", deposit_id.to_string());
@@ -58,7 +58,7 @@ impl From<InstantSellEndpoint> for CSGOEmpireApiRequest<InstantSellEndpoint> {
 
 impl CSGOEmpireApi {
     pub fn instant_sell(
-        api_key: &'static str,
+        api_key: impl Into<String>,
         deposit_id: u64,
     ) -> CSGOEmpireApiRequest<InstantSellEndpoint> {
         InstantSellEndpoint::new(api_key, deposit_id).into()

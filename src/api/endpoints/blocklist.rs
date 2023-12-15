@@ -43,7 +43,7 @@ impl From<BlocklistEndpoint> for CSGOEmpireApiRequest<BlocklistEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn blocklist(api_key: &'static str) -> CSGOEmpireApiRequest<BlocklistEndpoint> {
+    pub fn blocklist(api_key: impl Into<String>) -> CSGOEmpireApiRequest<BlocklistEndpoint> {
         BlocklistEndpoint::new(api_key).into()
     }
 }

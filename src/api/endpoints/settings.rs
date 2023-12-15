@@ -61,7 +61,7 @@ impl From<SettingsEndpoint> for CSGOEmpireApiRequest<SettingsEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn settings(api_key: &'static str) -> CSGOEmpireApiRequest<SettingsEndpoint> {
+    pub fn settings(api_key: impl Into<String>) -> CSGOEmpireApiRequest<SettingsEndpoint> {
         SettingsEndpoint::new(api_key).into()
     }
 }

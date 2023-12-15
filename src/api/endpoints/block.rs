@@ -53,7 +53,7 @@ impl From<BlockUserEndpoint> for CSGOEmpireApiRequest<BlockUserEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn block_user(api_key: &'static str) -> CSGOEmpireApiRequest<BlockUserEndpoint> {
+    pub fn block_user(api_key: impl Into<String>) -> CSGOEmpireApiRequest<BlockUserEndpoint> {
         BlockUserEndpoint::new(api_key).into()
     }
 }

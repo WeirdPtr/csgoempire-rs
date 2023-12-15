@@ -42,7 +42,7 @@ impl From<MetadataEndpoint> for CSGOEmpireApiRequest<MetadataEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn metadata(api_key: &'static str) -> CSGOEmpireApiRequest<MetadataEndpoint> {
+    pub fn metadata(api_key: impl Into<String>) -> CSGOEmpireApiRequest<MetadataEndpoint> {
         MetadataEndpoint::new(api_key).into()
     }
 }

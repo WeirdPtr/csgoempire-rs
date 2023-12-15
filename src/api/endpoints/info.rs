@@ -42,7 +42,7 @@ impl From<UniqueInfoEndpoint> for CSGOEmpireApiRequest<UniqueInfoEndpoint> {
 }
 
 impl CSGOEmpireApi {
-    pub fn unique_info(api_key: &'static str) -> CSGOEmpireApiRequest<UniqueInfoEndpoint> {
+    pub fn unique_info(api_key: impl Into<String>) -> CSGOEmpireApiRequest<UniqueInfoEndpoint> {
         UniqueInfoEndpoint::new(api_key).into()
     }
 }

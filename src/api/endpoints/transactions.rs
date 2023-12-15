@@ -55,7 +55,7 @@ impl From<TransactionHistoryEndpoint> for CSGOEmpireApiRequest<TransactionHistor
 
 impl CSGOEmpireApi {
     pub fn transaction_history(
-        api_key: &'static str,
+        api_key: impl Into<String>,
     ) -> CSGOEmpireApiRequest<TransactionHistoryEndpoint> {
         TransactionHistoryEndpoint::new(api_key).into()
     }
