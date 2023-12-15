@@ -12,41 +12,20 @@ use socketio::{
     socket::{builder::SocketBuilder, Socket, SocketReadStream, SocketWriteSink},
     Request,
 };
-use std::{sync::Arc, thread};
+use std::sync::Arc;
 
-pub struct CSGOEmpireSocketBuilder {
+pub struct CSGOEmpireSocketBuilder<'a> {
     builder: SocketBuilder,
-    api_key: &'static str,
-    address: &'static str,
+    api_key: &'a str,
     headers: Option<HeaderMap>,
-    max_price: Option<i64>,
 }
 
-impl CSGOEmpireSocketBuilder {
-    pub fn new<K>(api_key: K) -> Self
-    where
-        K: Into<&'static str>,
-    {
-        let mut builder = SocketBuilder::new(Self::generate_inner_request(SOCKET_ADDRESS, None));
-
-        let api_key = api_key.into();
-
-        Self::prepare_builder(&mut builder, api_key);
-
-        Self {
-            api_key,
-            builder,
-            address: SOCKET_ADDRESS,
-            headers: None,
-            max_price: None,
-        }
+impl<'k> CSGOEmpireSocketBuilder<'k> {
+    pub fn new<K>(api_key: impl Into<&'k str>) -> Self {
+        Self::new_with_address(api_key, SOCKET_ADDRESS)
     }
 
-    pub fn new_with_address<K, A>(api_key: K, address: A) -> Self
-    where
-        K: Into<&'static str>,
-        A: Into<&'static str>,
-    {
+    pub fn new_with_address(api_key: impl Into<&'k str>, address: impl Into<&'k str>) -> Self {
         let address = address.into();
 
         let mut builder = SocketBuilder::new(Self::generate_inner_request(address, None));
@@ -57,10 +36,8 @@ impl CSGOEmpireSocketBuilder {
 
         Self {
             api_key,
-            address,
             builder,
             headers: None,
-            max_price: None,
         }
     }
 
@@ -121,7 +98,9 @@ impl CSGOEmpireSocketBuilder {
         self
     }
 
-    fn prepare_builder(builder: &mut SocketBuilder, api_key: &'static str) {
+    fn prepare_builder(builder: &mut SocketBuilder, api_key: impl Into<String>) {
+        let api_key = Arc::new(api_key.into());
+
         builder
         .on("handshake", move |_, _, write| {
             async move {
@@ -140,6 +119,7 @@ impl CSGOEmpireSocketBuilder {
             .boxed()
         })
         .on("init", move|packet, _, write| {
+            let api_key = api_key.clone();
             async move {
                 // TODO: rewrite this
                 let is_authenticated = packet.data.unwrap_or(json!({"authenticated": false}));
@@ -168,7 +148,7 @@ impl CSGOEmpireSocketBuilder {
                     return;
                 }
 
-                let user_metadata = CSGOEmpireApi::metadata(api_key).send().await;
+                let user_metadata = CSGOEmpireApi::metadata(api_key.as_ref()).send().await;
 
                 if user_metadata.is_err() {
                     return;
@@ -258,11 +238,7 @@ impl CSGOEmpireSocketBuilder {
     }
 
     pub async fn build(self) -> Result<CSGOEmpireSocket, Box<dyn std::error::Error>> {
-        let mut socket_instance = CSGOEmpireSocket::new_with_url(
-            self.api_key,
-            self.address,
-            self.builder.connect().await?,
-        );
+        let mut socket_instance = CSGOEmpireSocket::new(self.builder.connect().await?);
 
         // socket_instance.socket.handshake().await?;
 

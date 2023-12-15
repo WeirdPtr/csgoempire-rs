@@ -17,26 +17,12 @@ pub use socketio::socket::SocketReadStream;
 pub use socketio::socket::SocketWriteSink;
 
 pub struct CSGOEmpireSocket {
-    _api_key: &'static str,
-    _address: &'static str,
     socket: Socket,
 }
 
 impl CSGOEmpireSocket {
-    pub fn new(api_key: &'static str, socket: Socket) -> Self {
-        Self {
-            _api_key: api_key,
-            socket,
-            _address: constants::SOCKET_ADDRESS,
-        }
-    }
-
-    pub fn new_with_url(api_key: &'static str, address: &'static str, socket: Socket) -> Self {
-        Self {
-            _api_key: api_key,
-            _address: address,
-            socket,
-        }
+    pub fn new(socket: Socket) -> Self {
+        Self { socket }
     }
 
     pub async fn emit<E, P>(
