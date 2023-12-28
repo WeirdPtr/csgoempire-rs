@@ -20,7 +20,7 @@ impl From<&CSGOEmpireSocketEvent> for &str {
             CSGOEmpireSocketEvent::AuctionUpdate => "auction_update",
             CSGOEmpireSocketEvent::DeletedItem => "deleted_item",
             CSGOEmpireSocketEvent::TradeStatus => "trade_status",
-            CSGOEmpireSocketEvent::Disconnect => "disconnect",
+            CSGOEmpireSocketEvent::Disconnect => "close",
             CSGOEmpireSocketEvent::Error => "err",
         }
     }

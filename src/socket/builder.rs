@@ -218,7 +218,11 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
             + Send
             + Sync,
     {
-        self.builder.on(event, listener);
+        match event {
+            CSGOEmpireSocketEvent::Disconnect => self.builder.on("close", listener),
+            _ => self.builder.on(event, listener),
+        };
+
         self
     }
 

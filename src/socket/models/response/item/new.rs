@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewItemResponse {
@@ -12,7 +11,7 @@ pub struct NewItemResponse {
     pub market_name: String,
     pub market_value: i64,
     pub name_color: String,
-    pub preview_id: Value,
+    pub preview_id: Option<String>,
     pub price_is_unreliable: bool,
     pub stickers: Vec<Sticker>,
     pub suggested_price: i64,
@@ -29,7 +28,7 @@ pub struct NewItemResponse {
 pub struct Sticker {
     pub wear: Option<f64>,
     pub name: String,
-    pub image: String,
+    pub image: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -46,9 +45,9 @@ pub struct DepositorStats {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ItemSearch {
-    pub category: String,
+    pub category: Option<String>,
     #[serde(rename = "type")]
-    pub item_type: Value,
-    pub sub_type: Value,
-    pub rarity: String,
+    pub item_type: Option<String>,
+    pub sub_type: Option<String>,
+    pub rarity: Option<String>,
 }
