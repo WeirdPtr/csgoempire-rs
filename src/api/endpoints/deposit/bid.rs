@@ -20,8 +20,6 @@ impl CSGOEmpireEndpoint for BidEndpoint {
     const URL: &'static str = "/trading/deposit/{deposit_id}/bid";
     const METHOD: Method = Method::POST;
 
-    const REQUIRED_PARAMS: &'static [&'static str] = &["deposit_id"];
-
     fn headers_mut(&mut self) -> &mut HashMap<&'static str, String> {
         &mut self.0
     }
@@ -59,7 +57,12 @@ impl From<BidEndpoint> for CSGOEmpireApiRequest<BidEndpoint> {
             .get("{deposit_id}")
             .unwrap_or(&"".to_string())
             .to_owned();
-        Self::new(endpoint).shim("{deposit_id}", deposit_id)
+
+        let body = serde_json::to_string(&endpoint.2).unwrap_or("".to_string());
+
+        Self::new(endpoint)
+            .shim("{deposit_id}", deposit_id)
+            .body(body)
     }
 }
 
