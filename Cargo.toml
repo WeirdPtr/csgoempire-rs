@@ -21,6 +21,7 @@ futures-util = { version = "0.3", optional = true }
 rand = { version = "0.8", optional = true }
 base64 = { version = "0.21", optional = true }
 regex = { version = "1.10", optional = true }
+serde_repr = "0.1.17"
 
 [features]
 default = ["full"]
