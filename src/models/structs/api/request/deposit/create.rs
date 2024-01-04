@@ -7,6 +7,6 @@ pub struct CreateDepositRequest {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Item {
-    pub id: i64,
-    pub coin_value: i64,
+    pub id: u64,
+    pub coin_value: u64,
 }

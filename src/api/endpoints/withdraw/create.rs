@@ -33,7 +33,7 @@ impl CSGOEmpireEndpoint for CreateWithdrawalEndpoint {
 }
 
 impl CreateWithdrawalEndpoint {
-    pub fn new(api_key: impl Into<String>, deposit_id: i64, coin_value: i64) -> Self {
+    pub fn new(api_key: impl Into<String>, deposit_id: u64, coin_value: u64) -> Self {
         let mut shims = HashMap::new();
 
         shims.insert("{deposit_id}", deposit_id.to_string());
@@ -45,7 +45,7 @@ impl CreateWithdrawalEndpoint {
         )
     }
 
-    pub fn deposit_id(mut self, deposit_id: i64) -> Self {
+    pub fn deposit_id(mut self, deposit_id: u64) -> Self {
         self.1.insert("{deposit_id}", deposit_id.to_string());
         self
     }
@@ -74,8 +74,8 @@ impl From<CreateWithdrawalEndpoint> for CSGOEmpireApiRequest<CreateWithdrawalEnd
 impl CSGOEmpireApi {
     pub fn create_withdrawal(
         api_key: impl Into<String>,
-        deposit_id: i64,
-        coin_value: i64,
+        deposit_id: u64,
+        coin_value: u64,
     ) -> CSGOEmpireApiRequest<CreateWithdrawalEndpoint> {
         CreateWithdrawalEndpoint::new(api_key, deposit_id, coin_value).into()
     }
