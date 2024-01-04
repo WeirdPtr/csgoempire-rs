@@ -10,7 +10,7 @@ pub struct MetadataResponse {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct User {
-    pub id: i64,
+    pub id: u64,
     pub steam_name: String,
     pub avatar: String,
     pub registration_timestamp: String,
@@ -38,7 +38,7 @@ pub struct User {
     pub withdrawal_fee_owed: String,
     pub flags: i64,
     pub tos_version: String,
-    pub balance: i64,
+    pub balance: u64,
     pub ban: Value,
     pub balances: Vec<Value>,
     pub steam_id: String,
@@ -46,8 +46,8 @@ pub struct User {
     pub last_steam_level_cache: Option<String>,
     pub trade_offer_token: Option<String>,
     pub trade_url: Option<String>,
-    pub level: i64,
-    pub xp: i64,
+    pub level: u64,
+    pub xp: u64,
     pub user_hash: String,
     pub hashed_server_seed: String,
     pub roles: Vec<Value>,
@@ -67,8 +67,8 @@ pub struct User {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LastSession {
-    pub id: i64,
-    pub user_id: i64,
+    pub id: u64,
+    pub user_id: u64,
     pub ip: String,
     pub expired: bool,
     pub created_at: String,

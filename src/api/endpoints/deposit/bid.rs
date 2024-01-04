@@ -30,7 +30,7 @@ impl CSGOEmpireEndpoint for BidEndpoint {
 }
 
 impl BidEndpoint {
-    pub fn new(api_key: impl Into<String>, deposit_id: u64, bid_value: i64) -> Self {
+    pub fn new(api_key: impl Into<String>, deposit_id: u64, bid_value: u64) -> Self {
         let mut shims = HashMap::new();
 
         shims.insert("{deposit_id}", deposit_id.to_string());
@@ -70,7 +70,7 @@ impl CSGOEmpireApi {
     pub fn bid(
         api_key: impl Into<String>,
         deposit_id: u64,
-        bid_value: i64,
+        bid_value: u64,
     ) -> CSGOEmpireApiRequest<BidEndpoint> {
         BidEndpoint::new(api_key, deposit_id, bid_value).into()
     }

@@ -27,18 +27,18 @@ impl CSGOEmpireEndpoint for CancelDepositsEndpoint {
 }
 
 impl CancelDepositsEndpoint {
-    pub fn new(api_key: impl Into<String>, ids: Vec<i64>) -> Self {
+    pub fn new(api_key: impl Into<String>, ids: Vec<u64>) -> Self {
         let mut headers = get_base_request(api_key);
         headers.insert("Content-Type", "application/json".to_string());
         Self(headers, CancelDepositsRequest { ids })
     }
 
-    pub fn ids(mut self, ids: Vec<i64>) -> Self {
+    pub fn ids(mut self, ids: Vec<u64>) -> Self {
         self.1.ids = ids;
         self
     }
 
-    pub fn id(mut self, id: i64) -> Self {
+    pub fn id(mut self, id: u64) -> Self {
         self.1.ids.push(id);
         self
     }
@@ -58,13 +58,10 @@ impl From<CancelDepositsEndpoint> for CSGOEmpireApiRequest<CancelDepositsEndpoin
 }
 
 impl CSGOEmpireApi {
-    pub fn cancel_deposits<I>(
+    pub fn cancel_deposits(
         api_key: impl Into<String>,
-        ids: I,
-    ) -> CSGOEmpireApiRequest<CancelDepositsEndpoint>
-    where
-        I: Into<Vec<i64>>,
-    {
+        ids: impl Into<Vec<u64>>,
+    ) -> CSGOEmpireApiRequest<CancelDepositsEndpoint> {
         CancelDepositsEndpoint::new(api_key, ids.into()).into()
     }
 }
