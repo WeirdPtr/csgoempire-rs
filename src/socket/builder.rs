@@ -4,13 +4,14 @@ use crate::{
     util::{base64_encode, crate_user_agent},
 };
 use futures_util::{future::BoxFuture, lock::Mutex, FutureExt};
-use reqwest::header::HeaderMap;
+use http::header::HeaderMap;
 use serde_json::json;
 use socketio::{
     enums::packet::PacketType,
+    get_empty_body,
     parser::Packet,
     socket::{builder::SocketBuilder, Socket, SocketReadStream, SocketWriteSink},
-    Request,
+    EmptyRequest, Request,
 };
 use std::sync::Arc;
 
@@ -28,7 +29,8 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub fn new_with_address(api_key: impl Into<&'k str>, address: impl Into<&'k str>) -> Self {
         let address = address.into();
 
-        let mut builder = SocketBuilder::new(Self::generate_inner_request(address, None));
+        let mut builder =
+            SocketBuilder::new_with_request(Self::generate_inner_request(address, None));
 
         let api_key = api_key.into();
 
@@ -49,7 +51,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     fn get_request_from_uri(
         address: &str,
         headers: Option<&HeaderMap>,
-    ) -> Result<Request<()>, Box<dyn std::error::Error>> {
+    ) -> Result<EmptyRequest, Box<dyn std::error::Error>> {
         let captures = regex::Regex::new(r"(https?|wss?)://([^/]+)/")?.captures(address);
 
         if captures.is_none() {
@@ -77,12 +79,12 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
             }
         }
 
-        let request = request.body(())?;
+        let request = request.body(get_empty_body())?;
 
         Ok(request)
     }
 
-    fn generate_inner_request(url: &str, headers: Option<&HeaderMap>) -> Request<()> {
+    fn generate_inner_request(url: &str, headers: Option<&HeaderMap>) -> EmptyRequest {
         Self::get_request_from_uri(url, headers).unwrap_or(
             Self::get_request_from_uri(SOCKET_ADDRESS, headers).unwrap_or(
                 Self::get_request_from_uri(SOCKET_ADDRESS, None).expect("Malformed address"),
@@ -91,7 +93,10 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     }
 
     fn rebuild_inner(&mut self, url: &str) -> &mut Self {
-        self.builder = SocketBuilder::new(Self::generate_inner_request(url, self.headers.as_ref()));
+        self.builder = SocketBuilder::new_with_request(Self::generate_inner_request(
+            url,
+            self.headers.as_ref(),
+        ));
 
         Self::prepare_builder(&mut self.builder, self.api_key);
 
@@ -121,8 +126,10 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
         .on("init", move|packet, _, write| {
             let api_key = api_key.clone();
             async move {
+               let default_auth = json!({"authenticated": false});
+
                 // TODO: rewrite this
-                let is_authenticated = packet.data.unwrap_or(json!({"authenticated": false}));
+                let is_authenticated = packet.data.as_ref().unwrap_or(&default_auth);
                 let is_authenticated = is_authenticated.get("authenticated");
 
                 if is_authenticated.is_none() {
@@ -144,7 +151,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
                     // ))
                     // .await;
 
-                    let _ = Socket::send_raw(write, r#"42/trade,["filters",{"price_max":9999999}]"#.to_owned()).await;
+                    let _ = Socket::send_raw(write, br#"42/trade,["filters",{"price_max":9999999}]"# as &[u8]).await;
                     return;
                 }
 
@@ -192,10 +199,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
 
                 let raw_packet = format!(r#"42/trade,["identify",{{"uid":{user_id},"model":{user_model},"authorizationToken":"{socket_token}","signature":"{socket_signature}"}}]"#);
 
-                let _ = Socket::send_raw(write, raw_packet).await;
-
-
-
+                let _ = Socket::send_raw(write, raw_packet.as_bytes()).await;
             }
             .boxed()
         });
@@ -210,7 +214,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub fn on<L>(&mut self, event: CSGOEmpireSocketEvent, listener: L) -> &mut Self
     where
         L: for<'a> Fn(
-                Packet,
+                Arc<Packet>,
                 Arc<Mutex<SocketReadStream>>,
                 Arc<Mutex<SocketWriteSink>>,
             ) -> BoxFuture<'static, ()>
@@ -229,7 +233,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub fn on_any<L>(&mut self, listener: L) -> &mut Self
     where
         L: for<'a> Fn(
-                Packet,
+                Arc<Packet>,
                 Arc<Mutex<SocketReadStream>>,
                 Arc<Mutex<SocketWriteSink>>,
             ) -> BoxFuture<'static, ()>
@@ -246,7 +250,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
 
         // socket_instance.socket.handshake().await?;
 
-        socket_instance.emit_raw("40/trade,").await?;
+        socket_instance.emit_raw(br"40/trade," as &[u8]).await?;
 
         Ok(socket_instance)
     }
