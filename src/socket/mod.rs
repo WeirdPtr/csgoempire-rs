@@ -48,14 +48,17 @@ impl CSGOEmpireSocket {
     where
         P: Into<Packet>,
     {
-        self.socket.send_packet(payload.into()).await
+        self.socket
+            .send_packet(payload.into())
+            .await
+            .map_err(|e| e.into())
     }
 
-    pub async fn emit_raw<P>(&mut self, payload: P) -> Result<(), Box<dyn std::error::Error>>
-    where
-        P: Into<String>,
-    {
-        Socket::send_raw(self.socket.write(), payload.into())
+    pub async fn emit_raw<'p>(
+        &mut self,
+        payload: impl Into<&'p [u8]>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        Socket::send_raw(self.socket.write(), payload.into() as &[u8])
             .await
             .map_err(|e| e.into())
     }
@@ -73,6 +76,30 @@ impl CSGOEmpireSocket {
     }
 
     pub async fn reconnect(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        todo!("reconnect")
+        self.socket.reconnect().await
+    }
+
+    pub async fn initialize_auto_reconnect(&mut self) {
+        let configuration = self.socket.get_reconnect_configuration();
+
+        if configuration.is_none() {
+            return;
+        }
+
+        let configuration = configuration.unwrap().clone();
+
+        self.socket
+            .on("close", move |_, read, write| {
+                let configuration = configuration.clone();
+
+                async move {
+                    // TODO: Emit reconnect event
+                    let _reconnect_succesful = Socket::reconnect_raw(read, write, configuration)
+                        .await
+                        .is_ok();
+                }
+                .boxed()
+            })
+            .await;
     }
 }
