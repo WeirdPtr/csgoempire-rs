@@ -29,8 +29,9 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub fn new_with_address(api_key: impl Into<&'k str>, address: impl Into<&'k str>) -> Self {
         let address = address.into();
 
-        let mut builder =
-            SocketBuilder::new_with_request(Self::generate_inner_request(address, None));
+        let inner = Self::generate_inner_request(address, None);
+
+        let mut builder = SocketBuilder::new_with_request(inner);
 
         let api_key = api_key.into();
 
@@ -52,7 +53,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
         address: &str,
         headers: Option<&HeaderMap>,
     ) -> Result<EmptyRequest, Box<dyn std::error::Error>> {
-        let captures = regex::Regex::new(r"(https?|wss?)://([^/]+)/")?.captures(address);
+        let captures = regex::Regex::new(r"(https?|wss?)://([^/:]+)")?.captures(address);
 
         if captures.is_none() {
             return Err("Malformed address")?;
@@ -79,9 +80,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
             }
         }
 
-        let request = request.body(get_empty_body())?;
-
-        Ok(request)
+        request.body(get_empty_body()).map_err(|e| e.into())
     }
 
     fn generate_inner_request(url: &str, headers: Option<&HeaderMap>) -> EmptyRequest {
@@ -143,14 +142,6 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
                 }
 
                 if is_authenticated.unwrap() {
-                    // let _ = Socket::send_raw_packet(write,Packet::new(
-                    //     PacketType::Message,
-                    //     Some("trade".to_owned()),
-                    //     Some("filters".to_owned()),
-                    //     Some(json!({"price_max": 9999999})),
-                    // ))
-                    // .await;
-
                     let _ = Socket::send_raw(write, br#"42/trade,["filters",{"price_max":9999999}]"# as &[u8]).await;
                     return;
                 }
@@ -253,5 +244,10 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
         socket_instance.emit_raw(br"40/trade," as &[u8]).await?;
 
         Ok(socket_instance)
+    }
+
+    pub fn ignore_invalid_proxy(&mut self, value: bool) -> &mut Self {
+        self.builder.ignore_invalid_proxy(value);
+        self
     }
 }
