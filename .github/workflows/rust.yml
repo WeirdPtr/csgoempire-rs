@@ -40,5 +40,8 @@ jobs:
       - name: Build
         run: cargo build --verbose --all
 
+      - name: Build with proxy feature
+        run: cargo build --verbose --all --features socket-proxy
+
       - name: Test
         run: cargo test --verbose --all
