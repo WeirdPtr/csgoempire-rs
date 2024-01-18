@@ -53,7 +53,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
         address: &str,
         headers: Option<&HeaderMap>,
     ) -> Result<EmptyRequest, Box<dyn std::error::Error>> {
-        let captures = regex::Regex::new(r"(https?|wss?)://([^/]+)/")?.captures(address);
+        let captures = regex::Regex::new(r"(https?|wss?)://([^/:]+)")?.captures(address);
 
         if captures.is_none() {
             return Err("Malformed address")?;
