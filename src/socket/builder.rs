@@ -106,22 +106,6 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
         let api_key = Arc::new(api_key.into());
 
         builder
-        .on("handshake", move |_, _, write| {
-            async move {
-                let _ = Socket::send_raw_packet(
-                    write.clone(),
-                    Packet::new(PacketType::Ping, Some("trade".to_owned()), None, None),
-                )
-                .await;
-
-                let _ = Socket::send_raw_packet(
-                    write.clone(),
-                    Packet::new(PacketType::Event, None, None, None),
-                )
-                .await;
-            }
-            .boxed()
-        })
         .on("init", move|packet, _, write| {
             let api_key = api_key.clone();
             async move {
@@ -135,14 +119,28 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
                     return;
                 }
 
-                let is_authenticated = is_authenticated.unwrap().as_bool();
+                let is_authenticated = match is_authenticated.unwrap().as_bool() {
+                    Some(value) => value,
+                    None => return
+                };
 
-                if is_authenticated.is_none()  {
-                    return;
-                }
+                //      {
+                //         let _ = Socket::send_raw_packet(
+                //             write.clone(),
+                //             Packet::new(PacketType::Ping, Some("trade".to_owned()), None, None),
+                //         )
+                //         .await;
 
-                if is_authenticated.unwrap() {
-                    let _ = Socket::send_raw(write, br#"42/trade,["filters",{"price_max":9999999}]"# as &[u8]).await;
+                //         let _ = Socket::send_raw_packet(
+                //             write.clone(),
+                //             Packet::new(PacketType::Event, None, None, None),
+                //         )
+                //         .await;
+                //     },
+
+
+                if is_authenticated {
+                    drop(tokio::spawn(Socket::send_raw(write, br#"42/trade,["filters",{"price_max":9999999}]"# as &[u8])));
                     return;
                 }
 
@@ -239,8 +237,6 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub async fn build(self) -> Result<CSGOEmpireSocket, Box<dyn std::error::Error>> {
         let mut socket_instance = CSGOEmpireSocket::new(self.builder.connect().await?);
 
-        // socket_instance.socket.handshake().await?;
-
         socket_instance.emit_raw(br"40/trade," as &[u8]).await?;
 
         Ok(socket_instance)
@@ -249,5 +245,13 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
     pub fn ignore_invalid_proxy(&mut self, value: bool) -> &mut Self {
         self.builder.ignore_invalid_proxy(value);
         self
+    }
+
+    pub fn inner(&self) -> &SocketBuilder {
+        &self.builder
+    }
+
+    pub fn inner_mut(&mut self) -> &mut SocketBuilder {
+        &mut self.builder
     }
 }
