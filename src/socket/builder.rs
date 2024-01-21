@@ -7,7 +7,6 @@ use futures_util::{future::BoxFuture, lock::Mutex, FutureExt};
 use http::header::HeaderMap;
 use serde_json::json;
 use socketio::{
-    enums::packet::PacketType,
     get_empty_body,
     parser::Packet,
     socket::{builder::SocketBuilder, Socket, SocketReadStream, SocketWriteSink},
