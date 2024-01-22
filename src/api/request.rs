@@ -3,6 +3,11 @@ use reqwest::StatusCode;
 use serde::Serialize;
 use std::collections::HashMap;
 
+#[cfg(feature = "static-http-client")]
+lazy_static! {
+    static ref HTTP_CLIENT: reqwest::Client = reqwest::Client::new();
+}
+
 #[derive(Debug, PartialEq, Eq, Serialize)]
 pub struct CSGOEmpireApiRequest<E>
 where
@@ -109,8 +114,14 @@ where
             }
         }
 
+        #[cfg(not(feature = "static-http-client"))]
         let client = reqwest::Client::new();
+
+        #[cfg(not(feature = "static-http-client"))]
         let mut request = client.request(E::METHOD, &url);
+
+        #[cfg(feature = "static-http-client")]
+        let mut request = HTTP_CLIENT.request(E::METHOD, &url);
 
         for param in self.params.iter() {
             request = request.query(&[param]);

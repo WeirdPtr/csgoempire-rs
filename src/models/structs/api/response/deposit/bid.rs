@@ -5,6 +5,7 @@ use serde_json::Value;
 pub struct BidResponse {
     #[serde(default)]
     pub success: bool,
+    pub message: Option<String>,
     pub auction_data: Option<AuctionData>,
     pub invoice: Option<Invoice>,
 }
