@@ -112,11 +112,11 @@ impl CSGOEmpireSocket {
                         Some(listeners.clone()),
                         wildcard_listener.clone(),
                         Some(worker_handle),
-                        Some(ping_worker_handle),
+                        Some(ping_worker_handle.clone()),
                         Some(ping_interval),
+                        true,
                     )
-                    .await
-                    .is_ok();
+                    .await;
 
                     if !reconnect_succesful {
                         return;
