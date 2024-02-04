@@ -37,5 +37,5 @@ socket = [
 ]
 socket-proxy = ["socket", "socketio/proxy"]
 static-http-client = ["dep:lazy_static"]
-rustls = ["reqwest/rustls"]
+rustls = ["reqwest/rustls-tls"]
 native-tls = ["reqwest/default-tls"]
