@@ -40,6 +40,7 @@ pub struct User {
     pub tos_version: String,
     pub balance: u64,
     pub ban: Value,
+    pub steam_user_pivot: Option<SteamUserPivot>,
     pub balances: Vec<Value>,
     pub steam_id: String,
     pub steam_level: Value,
@@ -78,4 +79,29 @@ pub struct LastSession {
     pub hash: String,
     pub city: String,
     pub country: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SteamUserPivot {
+    pub id: i64,
+    pub steam_user_id: i64,
+    pub user_id: i64,
+    pub service_name: String,
+    pub created_at: String,
+    pub updated_at: String,
+    pub steam_user: SteamUser,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SteamUser {
+    pub id: i64,
+    pub steam_id: String,
+    pub name: String,
+    pub avatar: String,
+    pub profile_url: String,
+    pub trade_url: String,
+    pub trade_offer_token: String,
+    pub level: Value,
+    pub last_level_cache: Value,
+    pub time_created: i64,
 }
