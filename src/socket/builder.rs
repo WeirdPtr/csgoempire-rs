@@ -183,7 +183,7 @@ impl<'k> CSGOEmpireSocketBuilder<'k> {
                     return;
                 }
 
-                let user_model = user_model.unwrap().replace("\\\"", "\"");
+                let user_model = user_model.unwrap();
 
                 let raw_packet = format!(r#"42/trade,["identify",{{"uid":{user_id},"model":{user_model},"authorizationToken":"{socket_token}","signature":"{socket_signature}"}}]"#);
 
